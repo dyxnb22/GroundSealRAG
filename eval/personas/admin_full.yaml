@@ -1,0 +1,4 @@
+requester_id: admin_full
+roles: [admin]
+allowed_visibilities: [public, general, internal, hr-only, confidential, legal]
+tenant_id: tenant-default

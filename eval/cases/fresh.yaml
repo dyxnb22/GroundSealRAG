@@ -1,0 +1,13 @@
+- case_id: FRESH-01
+  query: quarterly product roadmap themes
+  requester_id: engineer_std
+  expected_source_ids: [SRC-product-roadmap]
+  method: hybrid
+  category: freshness
+
+- case_id: FRESH-02
+  query: coding standards for reviews
+  requester_id: engineer_std
+  expected_source_ids: [SRC-coding-standards]
+  method: hybrid
+  category: freshness

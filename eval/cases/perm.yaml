@@ -1,0 +1,43 @@
+- case_id: PERM-01
+  query: data encryption at rest requirements
+  requester_id: engineer_std
+  expected_source_ids: [SRC-security-policy]
+  expected_inaccessible: true
+  method: hybrid
+  category: permission
+
+- case_id: PERM-02
+  query: remote work core hours
+  requester_id: contractor_limited
+  expected_source_ids: [SRC-remote-work]
+  method: hybrid
+  category: permission
+
+- case_id: PERM-03
+  query: incident severity classification
+  requester_id: admin_full
+  expected_source_ids: [SRC-incident-runbook]
+  method: hybrid
+  category: permission
+
+- case_id: PERM-04
+  query: remote work guidelines
+  requester_id: guest_none
+  expected_inaccessible: true
+  method: hybrid
+  category: permission
+
+- case_id: PERM-05
+  query: expense reimbursement limits
+  requester_id: hr_manager
+  expected_source_ids: [SRC-expense-policy]
+  method: hybrid
+  category: permission
+
+- case_id: PERM-06
+  query: employee onboarding IT setup
+  requester_id: engineer_std
+  expected_source_ids: [SRC-onboarding]
+  expected_inaccessible: true
+  method: hybrid
+  category: permission

@@ -1,0 +1,20 @@
+- case_id: RANK-01
+  query: API token rotation procedure
+  requester_id: admin_full
+  expected_source_ids: [SRC-api-auth]
+  method: hybrid
+  category: ranking
+
+- case_id: RANK-02
+  query: P0 incident on-call escalation
+  requester_id: admin_full
+  expected_source_ids: [SRC-incident-runbook]
+  method: hybrid
+  category: ranking
+
+- case_id: RANK-03
+  query: expense receipt submission deadline
+  requester_id: hr_manager
+  expected_source_ids: [SRC-expense-policy]
+  method: hybrid
+  category: ranking

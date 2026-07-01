@@ -1,0 +1,27 @@
+- case_id: LEX-01
+  query: API token rotation procedure
+  requester_id: admin_full
+  expected_source_ids: [SRC-api-auth]
+  method: lexical
+  category: lexical
+
+- case_id: LEX-02
+  query: expense reimbursement receipt deadline
+  requester_id: hr_manager
+  expected_source_ids: [SRC-expense-policy]
+  method: lexical
+  category: lexical
+
+- case_id: LEX-03
+  query: P0 incident escalation
+  requester_id: admin_full
+  expected_source_ids: [SRC-incident-runbook]
+  method: lexical
+  category: lexical
+
+- case_id: LEX-04
+  query: coding standards pull request review
+  requester_id: engineer_std
+  expected_source_ids: [SRC-coding-standards]
+  method: lexical
+  category: lexical

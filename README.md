@@ -85,9 +85,23 @@ The generation layer is deliberately optional and late. The central object of th
 
 ## Current Status
 
-The repository is documentation-only. The current goal is to establish project contracts that make future implementation work smaller, testable, and phase-aligned.
+The repository implements Phases 1–13 of the retrieval pipeline:
 
-No code should be added until a task is mapped to a roadmap phase and the relevant design document states the intended behavior, artifacts, and evaluation method.
+- Source registration, ingestion, and chunking
+- Lexical (BM25), semantic, and hybrid (RRF) retrieval
+- Permission-aware filtering (deny-by-default)
+- Citation packing
+- Evaluation suite (32 cases) and failure analysis workflow
+- CLI (`groundseal`) for local experiments
+- Optional grounded answer generation
+- Audit log and source freshness extensions
+
+```bash
+pip install -e ".[dev]"
+groundseal register-source --manifest corpus/manifest.yaml
+groundseal ingest --all && groundseal chunk
+groundseal evaluate --suite eval/cases/
+```
 
 ## Execution Route
 

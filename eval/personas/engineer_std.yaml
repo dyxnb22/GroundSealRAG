@@ -1,0 +1,4 @@
+requester_id: engineer_std
+roles: [engineer]
+allowed_visibilities: [public, general, internal]
+tenant_id: tenant-default

@@ -1,0 +1,214 @@
+[
+  {
+    "source_id": "SRC-security-policy",
+    "title": "Security Data Handling Policy",
+    "source_type": "markdown",
+    "uri": "corpus/sources/security-data-handling-policy.md",
+    "owner_id": "team-security",
+    "tenant_id": "tenant-default",
+    "visibility": "confidential",
+    "allowed_roles": [
+      "admin",
+      "security"
+    ],
+    "sensitivity": "critical",
+    "freshness_updated_at": "2026-01-10T00:00:00Z",
+    "registered_at": "2026-07-01T13:07:30Z",
+    "citation_display_name": "Security Data Policy",
+    "allowed_groups": [],
+    "policy_tags": [
+      "security",
+      "pii"
+    ]
+  },
+  {
+    "source_id": "SRC-incident-runbook",
+    "title": "Incident Response Runbook",
+    "source_type": "markdown",
+    "uri": "corpus/sources/incident-response-runbook.md",
+    "owner_id": "team-security",
+    "tenant_id": "tenant-default",
+    "visibility": "confidential",
+    "allowed_roles": [
+      "admin",
+      "security",
+      "engineer"
+    ],
+    "sensitivity": "critical",
+    "freshness_updated_at": "2026-02-01T00:00:00Z",
+    "registered_at": "2026-07-01T13:07:30Z",
+    "citation_display_name": "Incident Runbook",
+    "allowed_groups": [],
+    "policy_tags": [
+      "security",
+      "incident"
+    ]
+  },
+  {
+    "source_id": "SRC-api-auth",
+    "title": "API Authentication Specification",
+    "source_type": "markdown",
+    "uri": "corpus/sources/api-authentication-spec.md",
+    "owner_id": "team-platform",
+    "tenant_id": "tenant-default",
+    "visibility": "internal",
+    "allowed_roles": [
+      "engineer",
+      "admin",
+      "security"
+    ],
+    "sensitivity": "medium",
+    "freshness_updated_at": "2026-01-15T00:00:00Z",
+    "registered_at": "2026-07-01T13:07:30Z",
+    "citation_display_name": "API Auth Spec",
+    "allowed_groups": [],
+    "policy_tags": [
+      "security"
+    ]
+  },
+  {
+    "source_id": "SRC-coding-standards",
+    "title": "Engineering Coding Standards",
+    "source_type": "markdown",
+    "uri": "corpus/sources/engineering-coding-standards.md",
+    "owner_id": "team-engineering",
+    "tenant_id": "tenant-default",
+    "visibility": "internal",
+    "allowed_roles": [
+      "engineer",
+      "admin"
+    ],
+    "sensitivity": "low",
+    "freshness_updated_at": "2026-03-01T00:00:00Z",
+    "registered_at": "2026-07-01T13:07:30Z",
+    "citation_display_name": "Coding Standards",
+    "allowed_groups": [],
+    "policy_tags": []
+  },
+  {
+    "source_id": "SRC-product-roadmap",
+    "title": "Quarterly Product Roadmap",
+    "source_type": "markdown",
+    "uri": "corpus/sources/quarterly-product-roadmap.md",
+    "owner_id": "team-product",
+    "tenant_id": "tenant-default",
+    "visibility": "internal",
+    "allowed_roles": [
+      "engineer",
+      "product",
+      "admin"
+    ],
+    "sensitivity": "medium",
+    "freshness_updated_at": "2026-04-01T00:00:00Z",
+    "registered_at": "2026-07-01T13:07:30Z",
+    "citation_display_name": "Product Roadmap",
+    "allowed_groups": [],
+    "policy_tags": []
+  },
+  {
+    "source_id": "SRC-onboarding",
+    "title": "Employee Onboarding Guide",
+    "source_type": "markdown",
+    "uri": "corpus/sources/employee-onboarding-guide.md",
+    "owner_id": "team-hr",
+    "tenant_id": "tenant-default",
+    "visibility": "hr-only",
+    "allowed_roles": [
+      "hr",
+      "admin"
+    ],
+    "sensitivity": "medium",
+    "freshness_updated_at": "2026-02-15T00:00:00Z",
+    "registered_at": "2026-07-01T13:07:30Z",
+    "citation_display_name": "Onboarding Guide",
+    "allowed_groups": [],
+    "policy_tags": [
+      "hr"
+    ]
+  },
+  {
+    "source_id": "SRC-expense-policy",
+    "title": "Expense Reimbursement Policy",
+    "source_type": "markdown",
+    "uri": "corpus/sources/expense-reimbursement-policy.md",
+    "owner_id": "team-hr",
+    "tenant_id": "tenant-default",
+    "visibility": "hr-only",
+    "allowed_roles": [
+      "hr",
+      "admin"
+    ],
+    "sensitivity": "medium",
+    "freshness_updated_at": "2026-01-20T00:00:00Z",
+    "registered_at": "2026-07-01T13:07:30Z",
+    "citation_display_name": "Expense Policy",
+    "allowed_groups": [],
+    "policy_tags": [
+      "finance",
+      "hr"
+    ]
+  },
+  {
+    "source_id": "SRC-remote-work",
+    "title": "Remote Work Guidelines",
+    "source_type": "markdown",
+    "uri": "corpus/sources/remote-work-guidelines.md",
+    "owner_id": "team-hr",
+    "tenant_id": "tenant-default",
+    "visibility": "general",
+    "allowed_roles": [
+      "engineer",
+      "hr",
+      "support",
+      "admin",
+      "product"
+    ],
+    "sensitivity": "low",
+    "freshness_updated_at": "2026-03-15T00:00:00Z",
+    "registered_at": "2026-07-01T13:07:30Z",
+    "citation_display_name": "Remote Work Guide",
+    "allowed_groups": [],
+    "policy_tags": []
+  },
+  {
+    "source_id": "SRC-support-playbook",
+    "title": "Customer Support Playbook",
+    "source_type": "markdown",
+    "uri": "corpus/sources/customer-support-playbook.md",
+    "owner_id": "team-support",
+    "tenant_id": "tenant-default",
+    "visibility": "internal",
+    "allowed_roles": [
+      "support",
+      "admin"
+    ],
+    "sensitivity": "medium",
+    "freshness_updated_at": "2026-02-20T00:00:00Z",
+    "registered_at": "2026-07-01T13:07:30Z",
+    "citation_display_name": "Support Playbook",
+    "allowed_groups": [],
+    "policy_tags": []
+  },
+  {
+    "source_id": "SRC-vendor-access",
+    "title": "Vendor Access Agreement Summary",
+    "source_type": "markdown",
+    "uri": "corpus/sources/vendor-access-agreement-summary.md",
+    "owner_id": "team-legal",
+    "tenant_id": "tenant-default",
+    "visibility": "legal",
+    "allowed_roles": [
+      "admin",
+      "legal"
+    ],
+    "sensitivity": "high",
+    "freshness_updated_at": "2026-01-25T00:00:00Z",
+    "registered_at": "2026-07-01T13:07:30Z",
+    "citation_display_name": "Vendor Access Summary",
+    "allowed_groups": [],
+    "policy_tags": [
+      "legal",
+      "vendor"
+    ]
+  }
+]

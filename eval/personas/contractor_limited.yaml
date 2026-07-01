@@ -1,0 +1,5 @@
+requester_id: contractor_limited
+roles: [contractor]
+allowed_visibilities: [general]
+allowed_source_ids: [SRC-remote-work]
+tenant_id: tenant-default

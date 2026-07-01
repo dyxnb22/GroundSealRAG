@@ -1,0 +1,4 @@
+requester_id: hr_manager
+roles: [hr]
+allowed_visibilities: [public, general, hr-only]
+tenant_id: tenant-default

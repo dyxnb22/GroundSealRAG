@@ -1,0 +1,27 @@
+- case_id: SEM-01
+  query: how to prove identity when calling our HTTP APIs
+  requester_id: engineer_std
+  expected_source_ids: [SRC-api-auth]
+  method: semantic
+  category: semantic
+
+- case_id: SEM-02
+  query: working from home equipment policy
+  requester_id: engineer_std
+  expected_source_ids: [SRC-remote-work]
+  method: semantic
+  category: semantic
+
+- case_id: SEM-03
+  query: new hire first week checklist
+  requester_id: hr_manager
+  expected_source_ids: [SRC-onboarding]
+  method: semantic
+  category: semantic
+
+- case_id: SEM-04
+  query: roadmap themes for next quarter
+  requester_id: engineer_std
+  expected_source_ids: [SRC-product-roadmap]
+  method: semantic
+  category: semantic

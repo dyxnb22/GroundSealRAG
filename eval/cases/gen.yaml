@@ -1,0 +1,20 @@
+- case_id: GEN-01
+  query: summarize API authentication for engineers
+  requester_id: engineer_std
+  expected_source_ids: [SRC-api-auth]
+  method: hybrid
+  category: generation
+
+- case_id: GEN-02
+  query: what are remote work core hours
+  requester_id: contractor_limited
+  expected_source_ids: [SRC-remote-work]
+  method: hybrid
+  category: generation
+
+- case_id: GEN-03
+  query: insufficient evidence about martian colony policy
+  requester_id: admin_full
+  expected_source_ids: []
+  method: hybrid
+  category: generation

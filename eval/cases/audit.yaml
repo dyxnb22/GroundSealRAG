@@ -1,0 +1,13 @@
+- case_id: AUDIT-01
+  query: API token rotation
+  requester_id: engineer_std
+  expected_source_ids: [SRC-api-auth]
+  method: hybrid
+  category: audit
+
+- case_id: AUDIT-02
+  query: expense reimbursement
+  requester_id: hr_manager
+  expected_source_ids: [SRC-expense-policy]
+  method: hybrid
+  category: audit

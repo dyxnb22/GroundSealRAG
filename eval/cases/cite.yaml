@@ -1,0 +1,27 @@
+- case_id: CITE-01
+  query: API bearer token requirements
+  requester_id: engineer_std
+  expected_source_ids: [SRC-api-auth]
+  method: hybrid
+  category: citation
+
+- case_id: CITE-02
+  query: pull request review checklist
+  requester_id: engineer_std
+  expected_source_ids: [SRC-coding-standards]
+  method: hybrid
+  category: citation
+
+- case_id: CITE-03
+  query: support ticket triage process
+  requester_id: admin_full
+  expected_source_ids: [SRC-support-playbook]
+  method: hybrid
+  category: citation
+
+- case_id: CITE-04
+  query: vendor NDA requirements
+  requester_id: admin_full
+  expected_source_ids: [SRC-vendor-access]
+  method: hybrid
+  category: citation

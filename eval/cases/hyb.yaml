@@ -1,0 +1,27 @@
+- case_id: HYB-01
+  query: OAuth2 client credentials flow
+  requester_id: engineer_std
+  expected_source_ids: [SRC-api-auth]
+  method: hybrid
+  category: hybrid
+
+- case_id: HYB-02
+  query: encryption in transit TLS requirements
+  requester_id: admin_full
+  expected_source_ids: [SRC-security-policy]
+  method: hybrid
+  category: hybrid
+
+- case_id: HYB-03
+  query: Q2 product milestones
+  requester_id: engineer_std
+  expected_source_ids: [SRC-product-roadmap]
+  method: hybrid
+  category: hybrid
+
+- case_id: HYB-04
+  query: home office equipment stipend
+  requester_id: engineer_std
+  expected_source_ids: [SRC-remote-work]
+  method: hybrid
+  category: hybrid
