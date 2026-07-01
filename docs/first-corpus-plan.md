@@ -2,9 +2,9 @@
 
 ## Purpose
 
-Define the initial 10-document markdown corpus for retrieval, permission, and citation evaluation.
+Define the markdown corpus for retrieval, permission, and citation evaluation.
 
-## Corpus Files
+## Corpus Files (12)
 
 | # | source_id | File | Topic | visibility | allowed_roles |
 |---|-----------|------|-------|------------|---------------|
@@ -18,21 +18,13 @@ Define the initial 10-document markdown corpus for retrieval, permission, and ci
 | 8 | SRC-remote-work | remote-work-guidelines.md | Remote work | general | engineer, hr, support, admin, product |
 | 9 | SRC-support-playbook | customer-support-playbook.md | Support playbook | internal | support, admin |
 | 10 | SRC-vendor-access | vendor-access-agreement-summary.md | Vendor access | legal | admin, legal |
+| 11 | SRC-data-retention | data-retention-policy.md | Data retention | internal | admin, legal, engineer |
+| 12 | SRC-platform-sla | platform-sla-overview.md | Platform SLA | internal | engineer, admin, product |
 
-## Permission Matrix (Requester × Visibility)
+## Eval Extension
 
-| Persona | general | internal | hr-only | confidential | legal |
-|---------|---------|----------|---------|--------------|-------|
-| admin_full | ✓ | ✓ | ✓ | ✓ | ✓ |
-| engineer_std | ✓ | ✓ (eng sources) | ✗ | ✗ | ✗ |
-| hr_manager | ✓ | ✗ | ✓ | ✗ | ✗ |
-| contractor_limited | ✓ (remote-work only) | ✗ | ✗ | ✗ | ✗ |
-| guest_none | ✗ | ✗ | ✗ | ✗ | ✗ |
+4 additional cases in `eval/cases/ext.yaml` (EXT-01..04) cover sources 11–12.
 
-## Manifest
+## Status
 
-All sources listed in `corpus/manifest.yaml`.
-
-## Next Action
-
-Implement `corpus/sources/*.md` with YAML frontmatter matching this table.
+Implemented. Manifest: `corpus/manifest.yaml`.
