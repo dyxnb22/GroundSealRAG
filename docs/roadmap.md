@@ -22,7 +22,7 @@ Required artifacts:
 Recommended document outputs:
 
 - consistency review notes
-- phase checklist template
+- phase checklist template (`docs/phase-checklist-template.md`)
 
 Optional implementation outputs:
 
