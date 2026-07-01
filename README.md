@@ -4,7 +4,7 @@ A permission-aware hybrid retrieval system for grounded enterprise agents.
 
 GroundSeal RAG is a long-running learning and engineering project focused on the retrieval layer behind grounded enterprise agents. The project starts from source control, document structure, permissions, citations, and evaluation before adding any generation layer. Its first milestone is not a chatbot. Its first milestone is a disciplined retrieval system that can explain what it found, why it was allowed to use it, and how well the retrieval behavior can be measured.
 
-The repository is currently in Phase 0: framing and contracts. This phase intentionally contains no retrieval implementation, no application surface, no model API integration, and no business logic.
+The repository is currently in **Phase 1: Source Registration And Ingestion Plan**. Phase 0 (framing and contracts) is complete. This phase intentionally contains no retrieval implementation, no application surface, no model API integration, and no business logic.
 
 ## Core Ideas
 
@@ -82,11 +82,16 @@ The generation layer is deliberately optional and late. The central object of th
 - [docs/development-plan.md](docs/development-plan.md): consolidated executable development plan with dependencies, milestones, and immediate next steps.
 - [docs/execution-rhythm.md](docs/execution-rhythm.md): operating rhythm for long-running agent work.
 - [docs/resume-scope.md](docs/resume-scope.md): how the project can become resume-ready without overstating it.
+- [docs/first-corpus-plan.md](docs/first-corpus-plan.md): initial corpus sources, documents, and requester personas.
+- [docs/source-registration-contract.md](docs/source-registration-contract.md): required source metadata fields and validation rules.
+- [docs/ingestion-contract.md](docs/ingestion-contract.md): document record schema and example records.
 - [docs/open-questions.md](docs/open-questions.md): research and experiment questions for later phases.
 
 ## Current Status
 
-The repository is documentation-only. The current goal is to establish project contracts that make future implementation work smaller, testable, and phase-aligned.
+The repository is documentation-only. Phase 0 is complete. Phase 1 source and ingestion contracts are drafted and awaiting review before any optional registry implementation.
+
+Completed Phase 0 artifacts include the consistency review, phase checklist template, and phase completion report under `notes/` and `reports/`.
 
 No code should be added until a task is mapped to a roadmap phase and the relevant design document states the intended behavior, artifacts, and evaluation method.
 

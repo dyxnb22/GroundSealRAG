@@ -34,18 +34,20 @@ The early project should keep this model small and inspectable.
 
 Source, document, and chunk records should preserve enough metadata to decide access. Permission metadata should not be stripped during ingestion or chunking.
 
-Possible fields:
+Field names are defined in [source-registration-contract.md](source-registration-contract.md) and copied into document records per [ingestion-contract.md](ingestion-contract.md):
 
-- tenant_id
-- source_id
-- owner_id
-- allowed_roles
-- allowed_groups
-- visibility
-- sensitivity
-- policy_tags
+| Field | Level | Purpose |
+|-------|-------|---------|
+| `tenant_id` | source, document, chunk | Tenant boundary |
+| `source_id` | source, document, chunk | Source identity |
+| `owner_id` | source, document | Ownership |
+| `allowed_roles` | source, document | Role-based allow list |
+| `allowed_groups` | source, document | Group-based allow list |
+| `visibility` | source, document | Coarse access label |
+| `sensitivity` | source, document | Sensitivity reporting |
+| `policy_tags` | source (optional) | Future policy filters |
 
-Actual field names should be finalized in Phase 1.
+Document-level permissions may narrow source permissions but must not widen them.
 
 ## Filtering Point
 

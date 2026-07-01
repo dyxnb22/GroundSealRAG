@@ -8,13 +8,16 @@ This document consolidates the GroundSeal RAG roadmap, task inventory, and desig
 
 | Item | Status |
 |------|--------|
-| Phase | 0 — Framing and Contracts |
+| Phase | 1 — Source Registration And Ingestion Plan (in progress) |
 | Code | None (by design) |
 | Core docs | Present: brief, architecture, permission, citation, evaluation, failure analysis |
+| Phase 0 | Complete — see `reports/phase0-completion-report.md` |
+| Phase 1 docs | Drafted: source contract, ingestion contract, first corpus plan |
+| Evaluation prep | Query case schema and 10 seed cases defined |
 | Task inventory | Mapped in `TASKS.md` |
 | Open questions | Collected in `docs/open-questions.md` |
 
-Phase 0 is nearly complete. Remaining Phase 0 work is consistency review and a phase checklist template. Phase 1 document work can begin in parallel once Phase 0 exit criteria are met.
+Phase 0 is complete. Current work: review Phase 1 contracts, then begin Phase 2 chunking design.
 
 ## Project Identity Constraints
 
@@ -63,43 +66,39 @@ Key dependency rules:
 
 ## Phase-by-Phase Plan
 
-### Phase 0: Framing And Contracts (current)
+### Phase 0: Framing And Contracts (complete)
 
 **Goal:** Stable project identity, agent rules, and document set.
 
-**Remaining tasks:**
+**Completed artifacts:**
 
-| Task | Output | Exit criterion |
-|------|--------|----------------|
-| Consistency review | Edits to README, brief, roadmap, rules | No contradictions across positioning docs |
-| Phase checklist template | Template under `notes/` or `reports/` | Future sessions can record goal, hypothesis, artifacts, findings, next steps |
+| Artifact | Location |
+|----------|----------|
+| Consistency review | `notes/phase0-consistency-review.md` |
+| Phase checklist template | `notes/phase-checklist-template.md` |
+| Phase 0 completion report | `reports/phase0-completion-report.md` |
 
-**Exit:** Documents agree on scope; tasks mapped to phases; no implementation code.
+**Exit:** Met — documents agree on scope; tasks mapped to phases; no implementation code.
 
 ---
 
-### Phase 1: Source Registration And Ingestion Plan
+### Phase 1: Source Registration And Ingestion Plan (current)
 
 **Goal:** Every document traceable to a registered source with permission and citation metadata.
 
-**Document-first tasks:**
+**Completed document tasks:**
 
-1. Define source metadata contract (source identity, ownership, permission scope, freshness, citation fields).
-2. Draft normalized document record examples (non-executable).
-3. Write ingestion assumptions note (boundaries, what metadata must survive normalization).
+1. Source metadata contract → `docs/source-registration-contract.md`
+2. Ingestion contract and examples → `docs/ingestion-contract.md`
+3. First corpus plan → `docs/first-corpus-plan.md`
 
-**Implementation (after contract approval):**
+**Remaining before Phase 1 exit:**
 
-- Minimal source registry that lists registered sources with required metadata.
+- Contract review and approval
+- Optional: minimal source registry implementation
+- Optional: corpus markdown files under `corpus/`
 
-**Evaluation:**
-
-- Every document traces to a source.
-- Permission and citation metadata are preserved through ingestion design.
-
-**Exit:** Source and document field definitions are stable; ingestion boundaries are clear.
-
-**Open decisions:** First corpus source types; freshness representation.
+**Exit:** Source and document field definitions stable; ingestion boundaries clear.
 
 ---
 
@@ -355,27 +354,28 @@ Key dependency rules:
 
 The next work sessions should follow this order:
 
-### Session group A — Close Phase 0
+### Session group A — Close Phase 0 ✅
 
-1. Run consistency review across README, `PROJECT_BRIEF.md`, roadmap, agent rules, and design docs.
-2. Create phase checklist template for `notes/` or `reports/`.
-3. Mark Phase 0 exit criteria complete in a phase summary report.
+1. ~~Run consistency review across README, `PROJECT_BRIEF.md`, roadmap, agent rules, and design docs.~~
+2. ~~Create phase checklist template for `notes/` or `reports/`.~~
+3. ~~Mark Phase 0 exit criteria complete in a phase summary report.~~
 
-### Session group B — Start Phase 1 (documents only)
+### Session group B — Phase 1 (documents) ✅ draft complete
 
-1. Define source metadata contract → design note.
-2. Draft document record and ingestion examples.
-3. Decide first corpus source types (small, permission-diverse, citation-friendly).
+1. ~~Define source metadata contract → design note.~~
+2. ~~Draft document record and ingestion examples.~~
+3. ~~Decide first corpus source types (small, permission-diverse, citation-friendly).~~
 
-### Session group C — Parallel evaluation prep
+### Session group C — Parallel evaluation prep ✅
 
-1. Define evaluation case schema in `docs/evaluation-plan.md`.
-2. Draft 5–10 seed query cases (no code required) covering exact match, paraphrase, permission deny, and missing metadata.
+1. ~~Define evaluation case schema in `docs/evaluation-plan.md`.~~
+2. ~~Draft 5–10 seed query cases (no code required) covering exact match, paraphrase, permission deny, and missing metadata.~~
 
-### Session group D — Phase 2 prep (after Phase 1 contracts)
+### Session group D — Phase 2 prep (next)
 
 1. Chunking strategy note with size, overlap, and boundary rules.
 2. Good/bad chunk examples tied to citation precision goals.
+3. Create corpus markdown files from `docs/first-corpus-plan.md`.
 
 ## Per-Phase Work Loop
 
