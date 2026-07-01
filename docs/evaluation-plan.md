@@ -16,17 +16,47 @@ The evaluation system should help answer:
 
 ## Evaluation Units
 
-The core evaluation unit should be a query case. A query case should eventually include:
+The core evaluation unit is a **query case**. Cases should be authored before retrieval implementation where possible. Seed cases live in [notes/seed-evaluation-cases.md](../notes/seed-evaluation-cases.md).
 
-- case identifier
-- query text
-- requester or permission context
-- expected relevant source or chunk identifiers
-- expected inaccessible evidence if relevant
-- acceptable alternate evidence
-- required citation behavior
-- notes about ambiguity
-- failure category if known
+### Query Case Schema
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| `case_id` | yes | Stable identifier, e.g. `case-001`. |
+| `query_text` | yes | Natural language query. |
+| `requester.persona_id` | yes | Reference persona from corpus plan. |
+| `requester.tenant_id` | yes | Tenant scope for permission checks. |
+| `requester.roles` | yes | Role list (may be empty). |
+| `requester.groups` | yes | Group list (may be empty). |
+| `expected_relevant.documents` | yes | Document IDs that should be retrieved for this requester. |
+| `expected_relevant.chunks` | no | Chunk IDs; required once chunking exists. |
+| `expected_inaccessible.documents` | no | Relevant globally but must not appear for this requester. |
+| `expected_inaccessible.chunks` | no | Same at chunk level. |
+| `acceptable_alternates` | no | Document or chunk IDs that satisfy the case if primary evidence ranks lower. |
+| `required_citation_behavior` | yes | Human-readable citation expectation. |
+| `permission_expectation` | yes | One of: `allow`, `deny`, `partial`. |
+| `primary_metric` | yes | Main metric for this case, e.g. `recall@3`, `unauthorized_evidence_in_top_k`. |
+| `notes` | no | Ambiguity, setup, or grading guidance. |
+| `failure_category_if_known` | no | From failure taxonomy if this case targets a known failure mode. |
+
+### Case Categories (First Corpus)
+
+- `lexical_exact` — exact terms, IDs, numbers
+- `semantic_paraphrase` — wording differs from source text
+- `permission_allow` — allowed evidence should appear
+- `permission_deny` — relevant but restricted evidence must not appear
+- `permission_partial` — mixed allowed and denied sources
+- `permission_no_access` — requester lacks all access
+- `cross_source` — evidence from multiple allowed sources
+- `no_result` — evidence absent from corpus
+- `ranking_setup` — multiple candidates; order matters
+
+### Grading Rules
+
+1. **Permission deny cases** — any unauthorized document or chunk in top-k is a blocking failure.
+2. **No-result cases** — retrieving plausible but wrong evidence is a retrieval failure, not a permission failure.
+3. **Ambiguous cases** — use `acceptable_alternates` rather than leaving expected evidence vague.
+4. **Global vs allowed recall** — record both when `expected_inaccessible` is non-empty.
 
 ## Metrics To Consider
 
