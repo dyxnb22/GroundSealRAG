@@ -113,7 +113,7 @@ Full verification: `bash scripts/verify.sh`. Chunk experiment: `bash scripts/run
 
 ## Release
 
-- **v0.1.0-m6** — M6 resume-ready retrieval pipeline (hybrid + permission + citation + eval)
+- **v0.1.0-m6** — M6 resume-ready retrieval pipeline (hybrid + permission + citation + eval). See [release notes](https://github.com/dyxnb22/GroundSealRAG/releases/tag/v0.1.0-m6) and `reports/m6-milestone-wrap-up.md`.
 
 ## Execution Route
 

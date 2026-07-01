@@ -4,6 +4,19 @@
 
 This document collects research and experiment questions for GroundSeal RAG. Some questions can be answered during design. Others should wait until implementation and evaluation data exist.
 
+## Resolved at v0.1.0-m6
+
+Answers from the first corpus (12 sources, 36 eval cases). See `reports/chunk-size-experiment-report.md`, `reports/phase8-rerank-report.md`, and `reports/phase5-hybrid-report.md`.
+
+| Question | Answer |
+|----------|--------|
+| Which chunk size improves recall@k on the first evaluation set? | 384/512/768 all reached recall@5 ≈ 0.972 and 36/36 passed; **512 kept as default** (balance of citation granularity and chunk count). |
+| Does overlap improve semantic retrieval or mostly increase duplicates? | 48–96 token overlap did not change suite pass rate; no duplicate-driven failures observed at current scale. |
+| Does hybrid retrieval improve top-k precision or only recall? | Hybrid (RRF) improved paraphrase and mixed-intent cases over lexical-only; exact-identifier cases preserved via BM25 leg. |
+| How much does reranking improve MRR on the evaluation set? | **No gain** on current ranking cases (hybrid MRR already 1.0); rerank **deferred** as default, kept `--rerank` opt-in. |
+| What is the observed gap between global recall and allowed recall? | Permission cases pass with `unauthorized_in_top_k = 0`; limited-access personas retrieve only granted sources. |
+| Which metrics are most useful for early iteration? | Case pass rate, `unauthorized_in_top_k`, `citation_leakage`, recall@k, MRR — blocking on permission/citation first. |
+
 ## Chunking Questions
 
 - What chunk size gives the best balance between citation precision and semantic completeness?
