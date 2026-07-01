@@ -4,7 +4,7 @@ A permission-aware hybrid retrieval system for grounded enterprise agents.
 
 GroundSeal RAG is a long-running learning and engineering project focused on the retrieval layer behind grounded enterprise agents. The project starts from source control, document structure, permissions, citations, and evaluation before adding any generation layer. Its first milestone is not a chatbot. Its first milestone is a disciplined retrieval system that can explain what it found, why it was allowed to use it, and how well the retrieval behavior can be measured.
 
-The repository is currently in Phase 0: framing and contracts. This phase intentionally contains no retrieval implementation, no application surface, no model API integration, and no business logic.
+The repository implements Phases 1–13 of the retrieval pipeline (M6/M7 complete).
 
 ## Core Ideas
 
@@ -98,10 +98,15 @@ The repository implements Phases 1–13 of the retrieval pipeline:
 
 ```bash
 pip install -e ".[dev]"
-groundseal register-source --manifest corpus/manifest.yaml
-groundseal ingest --all && groundseal chunk
+groundseal build              # register + ingest + chunk + index
 groundseal evaluate --suite eval/cases/
+# Or step-by-step:
+# groundseal register-source --manifest corpus/manifest.yaml
+# groundseal ingest --all     # auto-rechunks on content change
+# groundseal retrieve -q "API token rotation" -r engineer_std --method hybrid --pack
 ```
+
+Full verification: `bash scripts/verify.sh` (unit + integration + eval).
 
 ## Execution Route
 

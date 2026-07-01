@@ -27,6 +27,15 @@ Exits non-zero on: `unauthorized_in_top_k > 0`, citation leakage, or any failed 
 
 ```bash
 groundseal chunk --force
+groundseal build              # register + ingest + chunk + warm indexes
+groundseal build --eval       # build then run eval suite
+```
+
+## Ingest with auto-rechunk
+
+```bash
+groundseal ingest --all              # rechunks when content hash changes (default)
+groundseal ingest --all --no-rechunk # skip rechunk; manual `chunk --force` later
 ```
 
 ## Report

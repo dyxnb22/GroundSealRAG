@@ -8,6 +8,7 @@ import yaml
 
 from groundseal.models.document import DocumentRecord
 from groundseal.models.source import utc_now_iso
+from groundseal.ingestion.result import IngestResult
 from groundseal.registry.store import SourceRegistry
 
 
@@ -39,7 +40,14 @@ class MarkdownIngestor:
             return path
         return self.project_root / content_path
 
-    def ingest_file(self, path: Path, source_id: str | None = None) -> DocumentRecord:
+    def _existing_document(self, source_id: str) -> DocumentRecord | None:
+        for doc in self.registry.list_documents():
+            if doc.source_id == source_id:
+                return doc
+        return None
+
+    def ingest_file(self, path: Path, source_id: str | None = None) -> tuple[DocumentRecord, bool, bool]:
+        """Returns (document, content_changed, is_new)."""
         meta, body = parse_markdown(path)
         sid = source_id or meta.get("source_id")
         if not sid:
@@ -48,6 +56,11 @@ class MarkdownIngestor:
         source = self.registry.get_source(sid)
         if source is None:
             raise ValueError(f"Source not registered: {sid}")
+
+        existing = self._existing_document(sid)
+        new_hash = content_hash(body)
+        is_new = existing is None
+        content_changed = is_new or existing.content_hash != new_hash
 
         try:
             rel_path = str(path.relative_to(self.project_root))
@@ -59,7 +72,7 @@ class MarkdownIngestor:
             source_id=sid,
             title=meta.get("title", source.title),
             format="markdown",
-            content_hash=content_hash(body),
+            content_hash=new_hash,
             content_path=rel_path,
             ingested_at=utc_now_iso(),
             byte_size=path.stat().st_size,
@@ -67,14 +80,21 @@ class MarkdownIngestor:
             metadata={},
         )
         self.registry.add_document(doc)
-        return doc
+        return doc, content_changed, is_new
 
-    def ingest_all(self, sources_dir: Path) -> list[DocumentRecord]:
-        docs: list[DocumentRecord] = []
+    def ingest_all(self, sources_dir: Path) -> IngestResult:
+        documents: list[DocumentRecord] = []
+        changed: list[str] = []
+        new_ids: list[str] = []
         for path in sorted(sources_dir.glob("*.md")):
             meta, _ = parse_markdown(path)
-            docs.append(self.ingest_file(path, meta.get("source_id")))
-        return docs
+            doc, content_changed, is_new = self.ingest_file(path, meta.get("source_id"))
+            documents.append(doc)
+            if is_new:
+                new_ids.append(doc.source_id)
+            elif content_changed:
+                changed.append(doc.source_id)
+        return IngestResult(documents=documents, changed_source_ids=changed, new_source_ids=new_ids)
 
     def get_body(self, doc: DocumentRecord) -> str:
         path = self.resolve_path(doc.content_path)

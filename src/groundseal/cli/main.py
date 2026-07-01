@@ -7,12 +7,13 @@ from typing import Optional
 import typer
 
 from groundseal.audit.logger import AuditLogger
-from groundseal.bootstrap import bootstrap, clear_pipeline_cache
-from groundseal.chunking.baseline import BaselineChunker, STRATEGIES
+from groundseal.bootstrap import bootstrap, clear_pipeline_cache, rebuild_chunks
+from groundseal.chunking.baseline import STRATEGIES
 from groundseal.evaluation.failures import process_failed_cases
 from groundseal.evaluation.runner import EvalRunner
 from groundseal.evaluation.schema import load_cases
 from groundseal.generation.grounded import GroundedGenerator
+from groundseal.index.corpus_fingerprint import document_corpus_fingerprint, write_corpus_fingerprint
 from groundseal.ingestion.markdown_ingestor import MarkdownIngestor, parse_markdown
 from groundseal.paths import ProjectPaths, find_project_root
 from groundseal.permissions.requester import load_requester
@@ -33,6 +34,25 @@ def _load_requester_or_exit(paths: ProjectPaths, requester_id: str):
         raise typer.Exit(1) from exc
 
 
+def _maybe_rechunk(
+    paths: ProjectPaths,
+    needs_rechunk: bool,
+    rechunk: bool,
+    strategy: str = "baseline",
+) -> dict | None:
+    if not needs_rechunk:
+        return None
+    if not rechunk:
+        typer.echo(
+            "Content changed; run `groundseal chunk --force` or re-ingest with --rechunk",
+            err=True,
+        )
+        return None
+    count = rebuild_chunks(paths, strategy=strategy)
+    clear_pipeline_cache()
+    return {"chunk_count": count, "strategy": strategy, "rechunked": True}
+
+
 @app.command("register-source")
 def register_source(
     manifest: Path = typer.Option(None, "--manifest", help="Path to manifest.yaml"),
@@ -51,6 +71,7 @@ def register_source(
 def ingest(
     source_id: Optional[str] = typer.Option(None, "--source-id"),
     all_sources: bool = typer.Option(False, "--all"),
+    rechunk: bool = typer.Option(True, "--rechunk/--no-rechunk", help="Rebuild chunks when content changes"),
 ) -> None:
     if not all_sources and not source_id:
         typer.echo("Specify --all or --source-id", err=True)
@@ -61,7 +82,14 @@ def ingest(
     ingestor = MarkdownIngestor(registry, paths.root)
 
     if all_sources:
-        docs = ingestor.ingest_all(paths.sources_dir)
+        result = ingestor.ingest_all(paths.sources_dir)
+        docs = result.documents
+        needs_rechunk = result.needs_rechunk
+        summary = {
+            "ingested": len(docs),
+            "changed": result.changed_source_ids,
+            "new": result.new_source_ids,
+        }
     else:
         match_path: Path | None = None
         for path in paths.sources_dir.glob("*.md"):
@@ -72,10 +100,17 @@ def ingest(
         if match_path is None:
             typer.echo(f"No markdown file for source_id: {source_id}", err=True)
             raise typer.Exit(1)
-        docs = [ingestor.ingest_file(match_path, source_id)]
+        doc, changed, is_new = ingestor.ingest_file(match_path, source_id)
+        docs = [doc]
+        needs_rechunk = changed or is_new
+        summary = {"ingested": 1, "changed": [source_id] if changed else [], "new": [source_id] if is_new else []}
 
     clear_pipeline_cache()
-    typer.echo(json.dumps([d.to_dict() for d in docs], indent=2))
+    rechunk_info = _maybe_rechunk(paths, needs_rechunk, rechunk)
+    if rechunk_info:
+        summary["rechunk"] = rechunk_info
+
+    typer.echo(json.dumps({"summary": summary, "documents": [d.to_dict() for d in docs]}, indent=2))
 
 
 @app.command("chunk")
@@ -88,19 +123,69 @@ def chunk(
         raise typer.Exit(1)
 
     paths = _paths()
-    registry = SourceRegistry(paths.registry_dir)
-    ingestor = MarkdownIngestor(registry, paths.root)
-    chunker = BaselineChunker(registry)
+    try:
+        if force:
+            count = rebuild_chunks(paths, strategy=strategy)
+        else:
+            registry = SourceRegistry(paths.registry_dir)
+            ingestor = MarkdownIngestor(registry, paths.root)
+            from groundseal.chunking.baseline import BaselineChunker
 
-    documents = registry.list_documents()
-    if not documents:
-        typer.echo("No documents ingested. Run: groundseal ingest --all", err=True)
-        raise typer.Exit(1)
+            documents = registry.list_documents()
+            if not documents:
+                typer.echo("No documents ingested. Run: groundseal ingest --all", err=True)
+                raise typer.Exit(1)
+            chunker = BaselineChunker(registry)
+            chunks = chunker.chunk_all(documents, ingestor.get_body, strategy=strategy)
+            chunker.save_chunks(chunks, paths.chunks_path)
+            write_corpus_fingerprint(registry, document_corpus_fingerprint(documents))
+            count = len(chunks)
+    except ValueError as exc:
+        typer.echo(str(exc), err=True)
+        raise typer.Exit(1) from exc
 
-    chunks = chunker.chunk_all(documents, ingestor.get_body, strategy=strategy)
-    chunker.save_chunks(chunks, paths.chunks_path)
     clear_pipeline_cache()
-    typer.echo(json.dumps({"chunk_count": len(chunks), "strategy": strategy}))
+    typer.echo(json.dumps({"chunk_count": count, "strategy": strategy}))
+
+
+@app.command("build")
+def build(
+    strategy: str = typer.Option("baseline", "--strategy"),
+    evaluate_after: bool = typer.Option(False, "--eval", help="Run eval suite after build"),
+) -> None:
+    """Full local setup: register sources, ingest, chunk, and warm indexes."""
+    paths = _paths()
+    registry = SourceRegistry(paths.registry_dir)
+
+    try:
+        registry.register_from_manifest(paths.manifest)
+        ingestor = MarkdownIngestor(registry, paths.root)
+        ingest_result = ingestor.ingest_all(paths.sources_dir)
+        chunk_count = rebuild_chunks(paths, strategy=strategy)
+        clear_pipeline_cache()
+        bootstrap(paths, force_rebuild=True)
+    except (RegistryError, ValueError) as exc:
+        typer.echo(str(exc), err=True)
+        raise typer.Exit(1) from exc
+
+    output = {
+        "sources": len(registry.list_sources()),
+        "documents": len(ingest_result.documents),
+        "changed": ingest_result.changed_source_ids,
+        "chunk_count": chunk_count,
+        "strategy": strategy,
+    }
+
+    if evaluate_after:
+        pipeline = bootstrap(paths)
+        runner = EvalRunner(pipeline, paths.personas_dir)
+        report = runner.run_suite(paths.cases_dir)
+        output["eval"] = {"passed": report.passed, "failed": report.failed}
+        if report.failed or report.total_unauthorized or report.total_leakage:
+            typer.echo(json.dumps(output, indent=2))
+            raise typer.Exit(1)
+
+    typer.echo(json.dumps(output, indent=2))
 
 
 @app.command("retrieve")

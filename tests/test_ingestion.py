@@ -18,12 +18,24 @@ def test_register_and_ingest_all(paths):
     assert len(sources) == 10
 
     ingestor = MarkdownIngestor(registry, paths.root)
-    docs = ingestor.ingest_all(paths.sources_dir)
-    assert len(docs) == 10
-    for doc in docs:
+    result = ingestor.ingest_all(paths.sources_dir)
+    assert len(result.documents) == 10
+    for doc in result.documents:
         assert doc.source_id
         assert doc.document_id.startswith("DOC-")
         assert "body" not in doc.metadata
+
+
+def test_ingest_detects_content_change(paths):
+    registry = SourceRegistry(paths.registry_dir)
+    registry.register_from_manifest(paths.manifest)
+    ingestor = MarkdownIngestor(registry, paths.root)
+    first = ingestor.ingest_all(paths.sources_dir)
+    assert not first.changed_source_ids
+
+    second = ingestor.ingest_all(paths.sources_dir)
+    assert not second.changed_source_ids
+    assert not second.needs_rechunk
 
 
 def test_every_document_traces_to_source(paths):
@@ -45,8 +57,8 @@ def test_get_body_reads_from_file(paths, tmp_path):
     registry = SourceRegistry(paths.registry_dir)
     ingestor = MarkdownIngestor(registry, paths.root)
     registry.register_from_manifest(paths.manifest)
-    docs = ingestor.ingest_all(paths.sources_dir)
-    doc = docs[0]
+    result = ingestor.ingest_all(paths.sources_dir)
+    doc = result.documents[0]
     body1 = ingestor.get_body(doc)
     assert body1
     assert not doc.metadata.get("body")

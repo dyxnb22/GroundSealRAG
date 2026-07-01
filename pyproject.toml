@@ -29,3 +29,7 @@ where = ["src"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
+markers = [
+    "integration: tests that load embedding models and full pipeline (slow)",
+]
+addopts = "-m 'not integration'"

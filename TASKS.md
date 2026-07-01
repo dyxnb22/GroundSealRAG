@@ -17,3 +17,11 @@ Tasks mapped to roadmap phases 0–13. Each task leaves a concrete artifact.
 - [x] Reranking (opt-in, defer as default)
 - [x] Grounded generation
 - [x] Audit log + freshness extensions
+
+## Follow-up (post-review)
+
+- [x] Ingest content-hash change detection with auto-rechunk
+- [x] Corpus fingerprint for index staleness
+- [x] `groundseal build` one-shot setup command
+- [x] `scripts/verify.sh` full verification script
+- [x] pytest integration marker (fast default, `-m integration` for slow)

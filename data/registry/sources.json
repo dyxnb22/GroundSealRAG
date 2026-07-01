@@ -13,7 +13,7 @@
     ],
     "sensitivity": "critical",
     "freshness_updated_at": "2026-01-10T00:00:00Z",
-    "registered_at": "2026-07-01T13:19:43Z",
+    "registered_at": "2026-07-01T13:23:20Z",
     "citation_display_name": "Security Data Policy",
     "allowed_groups": [],
     "policy_tags": [
@@ -36,7 +36,7 @@
     ],
     "sensitivity": "critical",
     "freshness_updated_at": "2026-02-01T00:00:00Z",
-    "registered_at": "2026-07-01T13:19:43Z",
+    "registered_at": "2026-07-01T13:23:20Z",
     "citation_display_name": "Incident Runbook",
     "allowed_groups": [],
     "policy_tags": [
@@ -59,7 +59,7 @@
     ],
     "sensitivity": "medium",
     "freshness_updated_at": "2026-01-15T00:00:00Z",
-    "registered_at": "2026-07-01T13:19:43Z",
+    "registered_at": "2026-07-01T13:23:20Z",
     "citation_display_name": "API Auth Spec",
     "allowed_groups": [],
     "policy_tags": [
@@ -80,7 +80,7 @@
     ],
     "sensitivity": "low",
     "freshness_updated_at": "2026-03-01T00:00:00Z",
-    "registered_at": "2026-07-01T13:19:43Z",
+    "registered_at": "2026-07-01T13:23:20Z",
     "citation_display_name": "Coding Standards",
     "allowed_groups": [],
     "policy_tags": []
@@ -100,7 +100,7 @@
     ],
     "sensitivity": "medium",
     "freshness_updated_at": "2026-04-01T00:00:00Z",
-    "registered_at": "2026-07-01T13:19:43Z",
+    "registered_at": "2026-07-01T13:23:20Z",
     "citation_display_name": "Product Roadmap",
     "allowed_groups": [],
     "policy_tags": []
@@ -119,7 +119,7 @@
     ],
     "sensitivity": "medium",
     "freshness_updated_at": "2026-02-15T00:00:00Z",
-    "registered_at": "2026-07-01T13:19:43Z",
+    "registered_at": "2026-07-01T13:23:20Z",
     "citation_display_name": "Onboarding Guide",
     "allowed_groups": [],
     "policy_tags": [
@@ -140,7 +140,7 @@
     ],
     "sensitivity": "medium",
     "freshness_updated_at": "2026-01-20T00:00:00Z",
-    "registered_at": "2026-07-01T13:19:43Z",
+    "registered_at": "2026-07-01T13:23:20Z",
     "citation_display_name": "Expense Policy",
     "allowed_groups": [],
     "policy_tags": [
@@ -165,7 +165,7 @@
     ],
     "sensitivity": "low",
     "freshness_updated_at": "2026-03-15T00:00:00Z",
-    "registered_at": "2026-07-01T13:19:43Z",
+    "registered_at": "2026-07-01T13:23:20Z",
     "citation_display_name": "Remote Work Guide",
     "allowed_groups": [],
     "policy_tags": []
@@ -184,7 +184,7 @@
     ],
     "sensitivity": "medium",
     "freshness_updated_at": "2026-02-20T00:00:00Z",
-    "registered_at": "2026-07-01T13:19:43Z",
+    "registered_at": "2026-07-01T13:23:20Z",
     "citation_display_name": "Support Playbook",
     "allowed_groups": [],
     "policy_tags": []
@@ -203,7 +203,7 @@
     ],
     "sensitivity": "high",
     "freshness_updated_at": "2026-01-25T00:00:00Z",
-    "registered_at": "2026-07-01T13:19:43Z",
+    "registered_at": "2026-07-01T13:23:20Z",
     "citation_display_name": "Vendor Access Summary",
     "allowed_groups": [],
     "policy_tags": [

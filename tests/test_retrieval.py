@@ -2,7 +2,6 @@ import pytest
 
 from groundseal.bootstrap import bootstrap, clear_pipeline_cache
 from groundseal.paths import ProjectPaths, find_project_root
-from groundseal.permissions.requester import RequesterContext, load_requester
 
 
 @pytest.fixture
@@ -16,7 +15,10 @@ def pipeline(paths):
     return bootstrap(paths)
 
 
+@pytest.mark.integration
 def test_lexical_retrieval(pipeline, paths):
+    from groundseal.permissions.requester import load_requester
+
     req = load_requester(paths.personas_dir, "admin_full")
     result = pipeline.retrieve("API token rotation", req, method="lexical", top_k=5)
     assert result.allowed_candidates
@@ -24,7 +26,10 @@ def test_lexical_retrieval(pipeline, paths):
     assert "SRC-api-auth" in sources
 
 
+@pytest.mark.integration
 def test_permission_blocks_confidential(pipeline, paths):
+    from groundseal.permissions.requester import load_requester
+
     req = load_requester(paths.personas_dir, "engineer_std")
     result = pipeline.retrieve(
         "data encryption at rest requirements", req, method="hybrid", top_k=10
@@ -33,13 +38,19 @@ def test_permission_blocks_confidential(pipeline, paths):
     assert "SRC-security-policy" not in allowed_sources
 
 
+@pytest.mark.integration
 def test_guest_gets_no_results(pipeline, paths):
+    from groundseal.permissions.requester import load_requester
+
     req = load_requester(paths.personas_dir, "guest_none")
     result = pipeline.retrieve("remote work guidelines", req, method="hybrid", top_k=5)
     assert not result.allowed_candidates
 
 
+@pytest.mark.integration
 def test_invalid_method_raises(pipeline, paths):
+    from groundseal.permissions.requester import load_requester
+
     req = load_requester(paths.personas_dir, "admin_full")
     with pytest.raises(ValueError, match="Unknown retrieval method"):
         pipeline.retrieve("test", req, method="invalid")
