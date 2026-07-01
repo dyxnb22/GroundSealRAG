@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import json
-from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+
+from groundseal.models.source import utc_now_iso
 
 
 class AuditLogger:
@@ -12,7 +13,7 @@ class AuditLogger:
         self.log_path.parent.mkdir(parents=True, exist_ok=True)
 
     def log_retrieval(self, event: dict[str, Any]) -> None:
-        event["timestamp"] = datetime.now(timezone.utc).isoformat()
+        event["timestamp"] = utc_now_iso()
         with self.log_path.open("a", encoding="utf-8") as f:
             f.write(json.dumps(event) + "\n")
 

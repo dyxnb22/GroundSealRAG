@@ -5,7 +5,7 @@ from pathlib import Path
 
 import yaml
 
-VISIBILITY_ORDER = ["public", "general", "internal", "hr-only", "confidential", "legal"]
+from groundseal.permissions.constants import VISIBILITY_ORDER  # noqa: F401 — re-export
 
 
 @dataclass
@@ -19,6 +19,8 @@ class RequesterContext:
     @classmethod
     def from_yaml(cls, path: Path) -> RequesterContext:
         data = yaml.safe_load(path.read_text(encoding="utf-8"))
+        if not data or "requester_id" not in data:
+            raise ValueError(f"Invalid persona file: {path}")
         return cls(
             requester_id=data["requester_id"],
             roles=data.get("roles", []),

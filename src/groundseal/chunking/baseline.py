@@ -5,12 +5,15 @@ import re
 from pathlib import Path
 
 from groundseal.models.chunk import ChunkRecord, make_chunk_id
+from groundseal.models.document import DocumentRecord
 from groundseal.models.source import SourceRecord
 from groundseal.registry.store import SourceRegistry
 
 CHUNK_SIZE = 512
 CHUNK_OVERLAP = 64
 HEADING_RE = re.compile(r"^##\s+(.+)$", re.MULTILINE)
+
+STRATEGIES = frozenset({"baseline"})
 
 
 def estimate_tokens(text: str) -> int:
@@ -51,6 +54,22 @@ def window_chunks(text: str, size: int = CHUNK_SIZE, overlap: int = CHUNK_OVERLA
     return chunks
 
 
+def resolve_chunk_permissions(
+    source: SourceRecord,
+    doc: DocumentRecord,
+) -> tuple[str, list[str], list[str]]:
+    visibility = source.visibility
+    allowed_roles = list(source.allowed_roles)
+    allowed_groups = list(source.allowed_groups)
+
+    if doc.visibility_override:
+        visibility = doc.visibility_override
+    elif not doc.permission_inherit:
+        visibility = doc.visibility_override or source.visibility
+
+    return visibility, allowed_roles, allowed_groups
+
+
 class BaselineChunker:
     def __init__(self, registry: SourceRegistry) -> None:
         self.registry = registry
@@ -61,50 +80,56 @@ class BaselineChunker:
         source_id: str,
         body: str,
         source: SourceRecord,
+        doc: DocumentRecord,
         base_offset: int = 0,
     ) -> list[ChunkRecord]:
+        visibility, allowed_roles, allowed_groups = resolve_chunk_permissions(source, doc)
         records: list[ChunkRecord] = []
         chunk_index = 0
         cursor = base_offset
 
         for heading_path, section_text in split_sections(body):
             for rel_start, rel_end, chunk_text in window_chunks(section_text):
-                abs_start = cursor + rel_start
-                abs_end = cursor + rel_end
-                chunk_id = make_chunk_id(source_id, document_id, chunk_index)
                 records.append(
                     ChunkRecord(
-                        chunk_id=chunk_id,
+                        chunk_id=make_chunk_id(source_id, document_id, chunk_index),
                         document_id=document_id,
                         source_id=source_id,
                         text=chunk_text,
-                        start_offset=abs_start,
-                        end_offset=abs_end,
+                        start_offset=cursor + rel_start,
+                        end_offset=cursor + rel_end,
                         heading_path=heading_path,
                         chunk_index=chunk_index,
                         token_count=estimate_tokens(chunk_text),
-                        visibility=source.visibility,
-                        allowed_roles=list(source.allowed_roles),
+                        visibility=visibility,
+                        allowed_roles=allowed_roles,
+                        allowed_groups=allowed_groups,
                         sensitivity=source.sensitivity,
                         citation_display_name=source.citation_display_name,
+                        tenant_id=source.tenant_id,
                     )
                 )
                 chunk_index += 1
-            cursor += len(section_text) + 1
+            cursor += len(section_text)
 
         return records
 
-    def chunk_all(self, documents: list[dict], get_body) -> list[ChunkRecord]:
-        all_chunks: list[ChunkRecord] = []
-        for doc_dict in documents:
-            from groundseal.models.document import DocumentRecord
+    def chunk_all(
+        self,
+        documents: list[DocumentRecord],
+        get_body,
+        strategy: str = "baseline",
+    ) -> list[ChunkRecord]:
+        if strategy not in STRATEGIES:
+            raise ValueError(f"Unknown chunk strategy: {strategy}. Choose from {sorted(STRATEGIES)}")
 
-            doc = DocumentRecord.from_dict(doc_dict)
+        all_chunks: list[ChunkRecord] = []
+        for doc in documents:
             source = self.registry.get_source(doc.source_id)
             if source is None:
                 continue
             body = get_body(doc)
-            all_chunks.extend(self.chunk_document(doc.document_id, doc.source_id, body, source))
+            all_chunks.extend(self.chunk_document(doc.document_id, doc.source_id, body, source, doc))
         return all_chunks
 
     def save_chunks(self, chunks: list[ChunkRecord], path: Path) -> None:
@@ -112,6 +137,9 @@ class BaselineChunker:
         with path.open("w", encoding="utf-8") as f:
             for chunk in chunks:
                 f.write(json.dumps(chunk.to_dict()) + "\n")
+        from groundseal.index.fingerprint import write_fingerprint, chunk_fingerprint
+
+        write_fingerprint(path.with_suffix(".fingerprint.json"), chunk_fingerprint(chunks))
 
     def load_chunks(self, path: Path) -> list[ChunkRecord]:
         if not path.exists():

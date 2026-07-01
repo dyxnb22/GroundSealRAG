@@ -21,6 +21,14 @@ groundseal retrieve -q "API token rotation" -r engineer_std --method hybrid --pa
 groundseal evaluate --suite eval/cases/ --report reports/phase9-eval-suite-report.md
 ```
 
+Exits non-zero on: `unauthorized_in_top_k > 0`, citation leakage, or any failed case.
+
+## Rebuild index
+
+```bash
+groundseal chunk --force
+```
+
 ## Report
 
 ```bash

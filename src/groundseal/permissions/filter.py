@@ -3,10 +3,8 @@ from __future__ import annotations
 from groundseal.models.chunk import ChunkRecord
 from groundseal.models.permission import PermissionDecision
 from groundseal.models.source import utc_now_iso
+from groundseal.permissions.constants import ADMIN_ROLES, VISIBILITY_ORDER
 from groundseal.permissions.requester import RequesterContext
-
-VISIBILITY_ORDER = ["public", "general", "internal", "hr-only", "confidential", "legal"]
-ADMIN_ROLES = {"admin"}
 
 
 def _visibility_allowed(requester: RequesterContext, visibility: str) -> bool:
@@ -18,13 +16,19 @@ def _visibility_allowed(requester: RequesterContext, visibility: str) -> bool:
         (VISIBILITY_ORDER.index(v) for v in requester.allowed_visibilities if v in VISIBILITY_ORDER),
         default=-1,
     )
-    vis_idx = VISIBILITY_ORDER.index(visibility)
-    return vis_idx <= max_allowed
+    return VISIBILITY_ORDER.index(visibility) <= max_allowed
+
+
+def _tenant_allowed(requester: RequesterContext, chunk: ChunkRecord) -> bool:
+    return requester.tenant_id == (chunk.tenant_id or "tenant-default")
 
 
 class PermissionFilter:
-    def evaluate_chunk(self, chunk: ChunkRecord, requester: RequesterContext) -> PermissionDecision:
-        # deny-by-default on missing metadata
+    def evaluate_chunk(
+        self,
+        chunk: ChunkRecord,
+        requester: RequesterContext,
+    ) -> PermissionDecision:
         if not chunk.visibility or not chunk.allowed_roles:
             return PermissionDecision(
                 chunk_id=chunk.chunk_id,
@@ -32,6 +36,16 @@ class PermissionFilter:
                 decision="deny",
                 reason_code="missing_metadata",
                 matched_rule="deny_by_default",
+                evaluated_at=utc_now_iso(),
+            )
+
+        if not _tenant_allowed(requester, chunk):
+            return PermissionDecision(
+                chunk_id=chunk.chunk_id,
+                requester_id=requester.requester_id,
+                decision="deny",
+                reason_code="tenant_mismatch",
+                matched_rule="tenant_boundary",
                 evaluated_at=utc_now_iso(),
             )
 
@@ -85,9 +99,12 @@ class PermissionFilter:
                 )
 
         role_match = bool(set(requester.roles) & set(chunk.allowed_roles))
+        group_match = bool(
+            chunk.allowed_groups and set(requester.roles) & set(chunk.allowed_groups)
+        )
         vis_ok = _visibility_allowed(requester, chunk.visibility)
 
-        if role_match and vis_ok:
+        if (role_match or group_match) and vis_ok:
             return PermissionDecision(
                 chunk_id=chunk.chunk_id,
                 requester_id=requester.requester_id,
@@ -115,6 +132,7 @@ class PermissionFilter:
         allowed = []
         denied = []
         decisions: list[PermissionDecision] = []
+
         for cand in candidates:
             chunk = chunk_map.get(cand.chunk_id)
             if chunk is None:

@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from groundseal.evaluation.runner import CaseResult
+from groundseal.evaluation.schema import EvalCase
 
 
 FAILURE_CATEGORIES = {
@@ -53,7 +54,7 @@ def write_failure_record(
 
 def process_failed_cases(
     case_results: list[CaseResult],
-    cases_map: dict,
+    cases_map: dict[str, EvalCase],
     failures_dir: Path,
 ) -> list[Path]:
     written: list[Path] = []

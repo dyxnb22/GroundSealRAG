@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import uuid
+from dataclasses import replace
 
 import numpy as np
 
@@ -27,8 +28,6 @@ class SemanticRetriever:
         candidates: list[CandidateRecord] = []
         for rank, idx in enumerate(ranked, start=1):
             raw_score = float(scores[idx])
-            if raw_score <= 0:
-                continue
             chunk = self.index.chunks[int(idx)]
             candidates.append(
                 CandidateRecord(

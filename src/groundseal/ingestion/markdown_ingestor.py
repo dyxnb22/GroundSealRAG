@@ -29,9 +29,15 @@ def content_hash(body: str) -> str:
 
 
 class MarkdownIngestor:
-    def __init__(self, registry: SourceRegistry, corpus_root: Path) -> None:
+    def __init__(self, registry: SourceRegistry, project_root: Path) -> None:
         self.registry = registry
-        self.corpus_root = corpus_root
+        self.project_root = project_root
+
+    def resolve_path(self, content_path: str) -> Path:
+        path = Path(content_path)
+        if path.is_absolute():
+            return path
+        return self.project_root / content_path
 
     def ingest_file(self, path: Path, source_id: str | None = None) -> DocumentRecord:
         meta, body = parse_markdown(path)
@@ -43,19 +49,24 @@ class MarkdownIngestor:
         if source is None:
             raise ValueError(f"Source not registered: {sid}")
 
+        try:
+            rel_path = str(path.relative_to(self.project_root))
+        except ValueError:
+            rel_path = str(path)
+
         doc = DocumentRecord(
             document_id=f"DOC-{sid}",
             source_id=sid,
             title=meta.get("title", source.title),
             format="markdown",
             content_hash=content_hash(body),
-            content_path=str(path.relative_to(self.corpus_root.parent) if path.is_relative_to(self.corpus_root.parent) else path),
+            content_path=rel_path,
             ingested_at=utc_now_iso(),
             byte_size=path.stat().st_size,
             permission_inherit=True,
-            metadata={"body": body},
+            metadata={},
         )
-        self.registry.add_document(doc.to_dict())
+        self.registry.add_document(doc)
         return doc
 
     def ingest_all(self, sources_dir: Path) -> list[DocumentRecord]:
@@ -66,8 +77,11 @@ class MarkdownIngestor:
         return docs
 
     def get_body(self, doc: DocumentRecord) -> str:
-        if "body" in doc.metadata:
-            return doc.metadata["body"]
-        path = self.corpus_root.parent / doc.content_path
+        path = self.resolve_path(doc.content_path)
+        if not path.exists():
+            raise FileNotFoundError(f"Document content not found: {path}")
         _, body = parse_markdown(path)
         return body
+
+    def content_changed(self, doc: DocumentRecord) -> bool:
+        return content_hash(self.get_body(doc)) != doc.content_hash

@@ -17,22 +17,36 @@ def test_register_and_ingest_all(paths):
     sources = registry.list_sources()
     assert len(sources) == 10
 
-    ingestor = MarkdownIngestor(registry, paths.corpus)
+    ingestor = MarkdownIngestor(registry, paths.root)
     docs = ingestor.ingest_all(paths.sources_dir)
     assert len(docs) == 10
     for doc in docs:
         assert doc.source_id
         assert doc.document_id.startswith("DOC-")
+        assert "body" not in doc.metadata
 
 
 def test_every_document_traces_to_source(paths):
     registry = SourceRegistry(paths.registry_dir)
     if not registry.list_sources():
         registry.register_from_manifest(paths.manifest)
-    ingestor = MarkdownIngestor(registry, paths.corpus)
+    ingestor = MarkdownIngestor(registry, paths.root)
     if not registry.list_documents():
         ingestor.ingest_all(paths.sources_dir)
 
     for doc in registry.list_documents():
-        source = registry.get_source(doc["source_id"])
+        source = registry.get_source(doc.source_id)
         assert source is not None
+        body = ingestor.get_body(doc)
+        assert len(body) > 100
+
+
+def test_get_body_reads_from_file(paths, tmp_path):
+    registry = SourceRegistry(paths.registry_dir)
+    ingestor = MarkdownIngestor(registry, paths.root)
+    registry.register_from_manifest(paths.manifest)
+    docs = ingestor.ingest_all(paths.sources_dir)
+    doc = docs[0]
+    body1 = ingestor.get_body(doc)
+    assert body1
+    assert not doc.metadata.get("body")

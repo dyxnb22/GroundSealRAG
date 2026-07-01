@@ -29,15 +29,11 @@ def mrr(result: RetrievalResult, case: EvalCase) -> float:
 
 
 def unauthorized_in_top_k(result: RetrievalResult, k: int = 5) -> int:
+    """Count false-allows: allowed candidates that lack an allow decision."""
     count = 0
+    decision_map = {d.chunk_id: d.decision for d in result.permission_decisions}
     for cand in result.allowed_candidates[:k]:
-        decision = next((d for d in result.permission_decisions if d.chunk_id == cand.chunk_id), None)
-        if decision and decision.decision != "allow":
-            count += 1
-    # also check if denied sources appear in allowed list (false allow)
-    for cand in result.allowed_candidates[:k]:
-        denied = any(d.chunk_id == cand.chunk_id and d.decision == "deny" for d in result.permission_decisions)
-        if denied:
+        if decision_map.get(cand.chunk_id) != "allow":
             count += 1
     return count
 

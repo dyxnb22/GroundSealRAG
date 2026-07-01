@@ -1,12 +1,19 @@
 from __future__ import annotations
 
 import json
+import os
+import tempfile
 from pathlib import Path
 from typing import Any
 
 import yaml
 
+from groundseal.models.document import DocumentRecord
 from groundseal.models.source import SourceRecord, utc_now_iso
+
+
+class RegistryError(Exception):
+    """Raised when registry operations fail validation."""
 
 
 class SourceRegistry:
@@ -22,7 +29,16 @@ class SourceRegistry:
         return json.loads(path.read_text(encoding="utf-8"))
 
     def _save_json(self, path: Path, data: list[dict[str, Any]]) -> None:
-        path.write_text(json.dumps(data, indent=2), encoding="utf-8")
+        path.parent.mkdir(parents=True, exist_ok=True)
+        fd, tmp_path = tempfile.mkstemp(dir=path.parent, suffix=".tmp")
+        try:
+            with os.fdopen(fd, "w", encoding="utf-8") as f:
+                json.dump(data, f, indent=2)
+            os.replace(tmp_path, path)
+        except Exception:
+            if os.path.exists(tmp_path):
+                os.unlink(tmp_path)
+            raise
 
     def list_sources(self) -> list[SourceRecord]:
         return [SourceRecord.from_dict(s) for s in self._load_json(self.sources_path)]
@@ -40,9 +56,16 @@ class SourceRegistry:
         self._save_json(self.sources_path, sources)
 
     def register_from_manifest(self, manifest_path: Path) -> list[SourceRecord]:
-        manifest = yaml.safe_load(manifest_path.read_text(encoding="utf-8"))
+        raw = yaml.safe_load(manifest_path.read_text(encoding="utf-8"))
+        if not raw or "sources" not in raw:
+            raise RegistryError(f"Invalid manifest: missing 'sources' in {manifest_path}")
+
         registered: list[SourceRecord] = []
-        for entry in manifest.get("sources", []):
+        required = ("source_id", "title", "uri", "owner_id", "visibility", "allowed_roles")
+        for entry in raw["sources"]:
+            missing = [f for f in required if f not in entry]
+            if missing:
+                raise RegistryError(f"Manifest entry missing fields {missing}: {entry.get('source_id', '?')}")
             source = SourceRecord(
                 source_id=entry["source_id"],
                 title=entry["title"],
@@ -63,14 +86,17 @@ class SourceRegistry:
             registered.append(source)
         return registered
 
-    def list_documents(self) -> list[dict[str, Any]]:
-        return self._load_json(self.documents_path)
+    def list_documents(self) -> list[DocumentRecord]:
+        return [DocumentRecord.from_dict(d) for d in self._load_json(self.documents_path)]
 
-    def save_documents(self, documents: list[dict[str, Any]]) -> None:
-        self._save_json(self.documents_path, documents)
+    def save_documents(self, documents: list[DocumentRecord]) -> None:
+        self._save_json(self.documents_path, [d.to_dict() for d in documents])
 
-    def add_document(self, doc: dict[str, Any]) -> None:
+    def add_document(self, doc: DocumentRecord) -> None:
         docs = self.list_documents()
-        docs = [d for d in docs if d["document_id"] != doc["document_id"]]
+        docs = [d for d in docs if d.document_id != doc.document_id]
         docs.append(doc)
         self.save_documents(docs)
+
+    def document_hashes(self) -> list[str]:
+        return [d.content_hash for d in self.list_documents()]

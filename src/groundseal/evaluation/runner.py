@@ -42,15 +42,26 @@ class EvalReport:
 
 
 class EvalRunner:
-    def __init__(self, pipeline: RetrievalPipeline, personas_dir: Path) -> None:
+    def __init__(
+        self,
+        pipeline: RetrievalPipeline,
+        personas_dir: Path,
+        exclude_stale: bool = False,
+    ) -> None:
         self.pipeline = pipeline
         self.personas_dir = personas_dir
+        self.exclude_stale = exclude_stale
 
     def run_case(self, case: EvalCase, method: str | None = None) -> CaseResult:
         requester = load_requester(self.personas_dir, case.requester_id)
-        m = method or case.method
+        effective_method = case.method if case.method != "hybrid" else (method or case.method)
         result = self.pipeline.retrieve(
-            case.query, requester, method=m, top_k=case.top_k, pack=True
+            case.query,
+            requester,
+            method=effective_method,
+            top_k=case.top_k,
+            pack=True,
+            exclude_stale=self.exclude_stale,
         )
 
         rec = recall_at_k(result, case, k=case.top_k)
@@ -77,7 +88,7 @@ class EvalRunner:
 
     def run_suite(self, cases_dir: Path, method: str = "hybrid") -> EvalReport:
         cases = load_cases(cases_dir)
-        results = [self.run_case(c, method=method if c.method == "hybrid" else c.method) for c in cases]
+        results = [self.run_case(c, method=method) for c in cases]
 
         passed = sum(1 for r in results if r.passed)
         return EvalReport(
