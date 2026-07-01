@@ -1,0 +1,52 @@
+---
+description: Evaluation-first rules for retrieval, permissions, and citations
+alwaysApply: true
+---
+
+# Evaluation Rule
+
+GroundSeal RAG is evaluation-first. New retrieval behavior should be judged with repeatable cases, not only examples that look good.
+
+## Experiment Requirements
+
+Every experiment should record:
+
+- purpose
+- hypothesis
+- setup
+- corpus or source state
+- query cases
+- permission context if relevant
+- observations
+- conclusion
+- follow-up tasks
+
+## Retrieval Evaluation
+
+Measure retrieval methods against baselines. Do not adopt hybrid retrieval, reranking, or generation because they sound advanced. Adopt them when they address observed failures.
+
+## Permission Evaluation
+
+Permission-aware retrieval must test:
+
+- full-access requester
+- limited-access requester
+- no-access requester
+- mixed allowed and denied evidence
+- missing permission metadata
+
+Unauthorized evidence in final context is a blocking failure.
+
+## Citation Evaluation
+
+Citation output should be checked for:
+
+- correct source identity
+- specific evidence reference
+- no inaccessible citation leakage
+- enough context to verify support
+- no unsupported answer claims if generation exists
+
+## Failure Records
+
+Record failures. Do not only document successful runs. Failure categories should create tasks or design updates.

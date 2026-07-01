@@ -1,0 +1,44 @@
+---
+description: Documentation quality and maintenance rules
+alwaysApply: true
+---
+
+# Documentation Rule
+
+Documentation in GroundSeal RAG must guide execution. Avoid generic educational summaries or broad future promises. Write documents so a future agent can make the next concrete decision.
+
+## Good Documentation Answers
+
+- What is this document for?
+- What project behavior does it constrain?
+- Which phase does it support?
+- What tradeoffs matter?
+- What failure modes should be watched?
+- What artifact or decision comes next?
+
+## Documentation Priority
+
+Prefer updating documents before implementation when:
+
+- scope is unclear
+- a phase boundary changes
+- a new dependency is proposed
+- permission behavior is undefined
+- citation behavior is undefined
+- evaluation cases do not exist
+- failures reveal a design gap
+
+## Required Maintenance
+
+When major work changes project direction, update:
+
+- `docs/roadmap.md`
+- `TASKS.md`
+- relevant design document
+- relevant notes or reports
+
+Do not let README claims get ahead of implemented or evaluated behavior.
+
+## Tone
+
+Use precise, restrained engineering language. Do not write marketing copy. Do not claim enterprise-grade maturity without evaluation evidence.

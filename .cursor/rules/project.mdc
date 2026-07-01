@@ -1,0 +1,40 @@
+---
+description: Project identity and boundaries for GroundSeal RAG
+alwaysApply: true
+---
+
+# GroundSeal RAG Project Rule
+
+GroundSeal RAG is a permission-aware hybrid retrieval system for grounded enterprise agents. Treat it as a retrieval and evidence assembly project, not a chatbot-first project.
+
+## Project Boundary
+
+The project should prioritize:
+
+- retrieval quality
+- source and chunk identity
+- permission-aware filtering
+- citation-ready evidence
+- evaluation and failure analysis
+- small phase-based progress
+
+Do not steer the project toward:
+
+- generic chatbot demos
+- broad app or frontend work
+- premature LLM provider integration
+- large package scaffolding
+- vague enterprise claims
+- features added only to make the project look larger
+
+## Current Phase
+
+The repository starts in Phase 0: framing and contracts. In this phase, create and refine documents only. Do not add business implementation code, retrieval modules, APIs, demos, or model integrations.
+
+## Alignment Rule
+
+Every new task must state the roadmap phase it belongs to. If the task does not map to a phase, update the roadmap or clarify scope before making changes.
+
+## Drift Rule
+
+If work begins to drift toward generation, UI, broad infrastructure, or unmeasured feature growth, return to `PROJECT_BRIEF.md`, `docs/design-principles.md`, and `docs/roadmap.md`.

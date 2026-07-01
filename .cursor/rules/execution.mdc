@@ -1,0 +1,48 @@
+---
+description: Execution discipline for long-running agent work
+alwaysApply: true
+---
+
+# Execution Rule
+
+Work in small, reviewable increments. Each round should leave a visible artifact such as a document update, note, report, evaluation case, failure record, or small phase-aligned implementation.
+
+## Required Work Loop
+
+1. Identify the phase.
+2. Read relevant documents.
+3. Define the intended artifact.
+4. Confirm exit criteria.
+5. Make the smallest useful change.
+6. Record findings or next steps.
+
+## Before Writing Code
+
+Code can only be added when:
+
+- the task maps to a roadmap phase
+- the relevant design document defines expected behavior
+- the output contract is clear
+- evaluation or verification is planned
+- the change is not an unrelated framework or architecture expansion
+
+If those conditions are not met, update documents first.
+
+## Prohibited Early Moves
+
+- Do not start with generation.
+- Do not make the project a chatbot.
+- Do not add a frontend, API, or app surface before the roadmap calls for it.
+- Do not add external frameworks to appear more complete.
+- Do not create broad empty code directories.
+- Do not skip reports after experiments.
+
+## Phase Completion
+
+At the end of a phase, leave:
+
+- artifacts produced
+- evaluation or review notes
+- failures observed
+- follow-up tasks
+- exit criteria status
