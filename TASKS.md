@@ -2,6 +2,8 @@
 
 Tasks are grouped by priority and mapped to roadmap phases. Each task should leave a concrete artifact. Avoid vague tasks such as "implement RAG" or "make it enterprise-grade."
 
+For the consolidated phase sequence, dependencies, milestones, and immediate execution order, see [docs/development-plan.md](docs/development-plan.md).
+
 ## Now
 
 These tasks belong to Phase 0: framing and contracts.

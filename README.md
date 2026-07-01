@@ -79,6 +79,7 @@ The generation layer is deliberately optional and late. The central object of th
 - [docs/evaluation-plan.md](docs/evaluation-plan.md): retrieval evaluation strategy.
 - [docs/failure-analysis-plan.md](docs/failure-analysis-plan.md): how failures should be recorded and converted into work.
 - [docs/roadmap.md](docs/roadmap.md): phased execution plan from framing to enterprise-oriented extensions.
+- [docs/development-plan.md](docs/development-plan.md): consolidated executable development plan with dependencies, milestones, and immediate next steps.
 - [docs/execution-rhythm.md](docs/execution-rhythm.md): operating rhythm for long-running agent work.
 - [docs/resume-scope.md](docs/resume-scope.md): how the project can become resume-ready without overstating it.
 - [docs/open-questions.md](docs/open-questions.md): research and experiment questions for later phases.
