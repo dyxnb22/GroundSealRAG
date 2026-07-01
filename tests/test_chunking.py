@@ -27,7 +27,7 @@ def test_chunking_produces_stable_ids(paths):
     chunker = BaselineChunker(registry)
     documents = registry.list_documents()
     chunks = chunker.chunk_all(documents, ingestor.get_body)
-    assert 80 <= len(chunks) <= 200
+    assert 100 <= len(chunks) <= 280
     for c in chunks:
         assert c.source_id
         assert c.document_id

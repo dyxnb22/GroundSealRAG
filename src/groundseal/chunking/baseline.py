@@ -13,7 +13,21 @@ CHUNK_SIZE = 512
 CHUNK_OVERLAP = 64
 HEADING_RE = re.compile(r"^##\s+(.+)$", re.MULTILINE)
 
-STRATEGIES = frozenset({"baseline"})
+# strategy_name -> (chunk_size, overlap)
+CHUNK_STRATEGIES: dict[str, tuple[int, int]] = {
+    "baseline": (512, 64),
+    "baseline-384": (384, 48),
+    "baseline-512": (512, 64),
+    "baseline-768": (768, 96),
+}
+
+STRATEGIES = frozenset(CHUNK_STRATEGIES.keys())
+
+
+def strategy_params(strategy: str) -> tuple[int, int]:
+    if strategy not in CHUNK_STRATEGIES:
+        raise ValueError(f"Unknown chunk strategy: {strategy}. Choose from {sorted(STRATEGIES)}")
+    return CHUNK_STRATEGIES[strategy]
 
 
 def estimate_tokens(text: str) -> int:
@@ -82,6 +96,8 @@ class BaselineChunker:
         source: SourceRecord,
         doc: DocumentRecord,
         base_offset: int = 0,
+        chunk_size: int = CHUNK_SIZE,
+        chunk_overlap: int = CHUNK_OVERLAP,
     ) -> list[ChunkRecord]:
         visibility, allowed_roles, allowed_groups = resolve_chunk_permissions(source, doc)
         records: list[ChunkRecord] = []
@@ -89,7 +105,7 @@ class BaselineChunker:
         cursor = base_offset
 
         for heading_path, section_text in split_sections(body):
-            for rel_start, rel_end, chunk_text in window_chunks(section_text):
+            for rel_start, rel_end, chunk_text in window_chunks(section_text, chunk_size, chunk_overlap):
                 records.append(
                     ChunkRecord(
                         chunk_id=make_chunk_id(source_id, document_id, chunk_index),
@@ -120,8 +136,7 @@ class BaselineChunker:
         get_body,
         strategy: str = "baseline",
     ) -> list[ChunkRecord]:
-        if strategy not in STRATEGIES:
-            raise ValueError(f"Unknown chunk strategy: {strategy}. Choose from {sorted(STRATEGIES)}")
+        chunk_size, chunk_overlap = strategy_params(strategy)
 
         all_chunks: list[ChunkRecord] = []
         for doc in documents:
@@ -129,7 +144,17 @@ class BaselineChunker:
             if source is None:
                 continue
             body = get_body(doc)
-            all_chunks.extend(self.chunk_document(doc.document_id, doc.source_id, body, source, doc))
+            all_chunks.extend(
+                self.chunk_document(
+                    doc.document_id,
+                    doc.source_id,
+                    body,
+                    source,
+                    doc,
+                    chunk_size=chunk_size,
+                    chunk_overlap=chunk_overlap,
+                )
+            )
         return all_chunks
 
     def save_chunks(self, chunks: list[ChunkRecord], path: Path) -> None:

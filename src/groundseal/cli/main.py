@@ -9,6 +9,7 @@ import typer
 from groundseal.audit.logger import AuditLogger
 from groundseal.bootstrap import bootstrap, clear_pipeline_cache, rebuild_chunks
 from groundseal.chunking.baseline import STRATEGIES
+from groundseal.evaluation.chunk_experiment import run_chunk_size_experiment, write_chunk_experiment_report
 from groundseal.evaluation.failures import process_failed_cases
 from groundseal.evaluation.runner import EvalRunner
 from groundseal.evaluation.schema import load_cases
@@ -20,6 +21,8 @@ from groundseal.permissions.requester import load_requester
 from groundseal.registry.store import RegistryError, SourceRegistry
 
 app = typer.Typer(help="GroundSeal RAG — permission-aware hybrid retrieval")
+experiment_app = typer.Typer(help="Run controlled experiments")
+app.add_typer(experiment_app, name="experiment")
 
 
 def _paths() -> ProjectPaths:
@@ -318,6 +321,31 @@ def answer(
         typer.echo(json.dumps(output, indent=2))
     else:
         typer.echo(json.dumps({"status": "no_package"}))
+
+
+@experiment_app.command("chunk-size")
+def experiment_chunk_size(
+    report: Path = typer.Option(None, "--report"),
+    restore: bool = typer.Option(True, "--restore/--no-restore", help="Restore baseline-512 after experiment"),
+) -> None:
+    """Compare chunk size strategies (384/512/768) on the eval suite."""
+    paths = _paths()
+    strategies = ["baseline-384", "baseline-512", "baseline-768"]
+    results = run_chunk_size_experiment(paths, strategies=strategies)
+
+    report_path = report or paths.reports_dir / "chunk-size-experiment-report.md"
+    write_chunk_experiment_report(results, report_path)
+
+    blocking = any(r.total_unauthorized or r.total_leakage for r in results)
+    if blocking:
+        typer.echo("BLOCKING: permission or citation failure during experiment", err=True)
+        raise typer.Exit(1)
+
+    if restore:
+        rebuild_chunks(paths, strategy="baseline-512")
+        clear_pipeline_cache()
+
+    typer.echo(json.dumps({"strategies": [r.__dict__ for r in results], "report": str(report_path)}))
 
 
 if __name__ == "__main__":

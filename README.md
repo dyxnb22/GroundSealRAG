@@ -1,5 +1,7 @@
 # GroundSeal RAG
 
+[![Verify](https://github.com/dyxnb22/GroundSealRAG/actions/workflows/verify.yml/badge.svg)](https://github.com/dyxnb22/GroundSealRAG/actions/workflows/verify.yml)
+
 A permission-aware hybrid retrieval system for grounded enterprise agents.
 
 GroundSeal RAG is a long-running learning and engineering project focused on the retrieval layer behind grounded enterprise agents. The project starts from source control, document structure, permissions, citations, and evaluation before adding any generation layer. Its first milestone is not a chatbot. Its first milestone is a disciplined retrieval system that can explain what it found, why it was allowed to use it, and how well the retrieval behavior can be measured.
@@ -91,10 +93,11 @@ The repository implements Phases 1–13 of the retrieval pipeline:
 - Lexical (BM25), semantic, and hybrid (RRF) retrieval
 - Permission-aware filtering (deny-by-default)
 - Citation packing
-- Evaluation suite (32 cases) and failure analysis workflow
+- Evaluation suite (36 cases) and failure analysis workflow
 - CLI (`groundseal`) for local experiments
 - Optional grounded answer generation
 - Audit log and source freshness extensions
+- Corpus: 12 markdown sources in `corpus/sources/`
 
 ```bash
 pip install -e ".[dev]"
@@ -106,7 +109,11 @@ groundseal evaluate --suite eval/cases/
 # groundseal retrieve -q "API token rotation" -r engineer_std --method hybrid --pack
 ```
 
-Full verification: `bash scripts/verify.sh` (unit + integration + eval).
+Full verification: `bash scripts/verify.sh`. Chunk experiment: `bash scripts/run_chunk_experiment.sh`.
+
+## Release
+
+- **v0.1.0-m6** — M6 resume-ready retrieval pipeline (hybrid + permission + citation + eval)
 
 ## Execution Route
 

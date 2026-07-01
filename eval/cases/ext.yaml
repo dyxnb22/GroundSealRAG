@@ -1,0 +1,27 @@
+- case_id: EXT-01
+  query: data retention period for customer backups
+  requester_id: admin_full
+  expected_source_ids: [SRC-data-retention]
+  method: lexical
+  category: extension
+
+- case_id: EXT-02
+  query: how long do we keep customer information after account closure
+  requester_id: engineer_std
+  expected_source_ids: [SRC-data-retention]
+  method: semantic
+  category: extension
+
+- case_id: EXT-03
+  query: platform uptime SLA availability target
+  requester_id: engineer_std
+  expected_source_ids: [SRC-platform-sla]
+  method: lexical
+  category: extension
+
+- case_id: EXT-04
+  query: scheduled maintenance window notification requirements
+  requester_id: admin_full
+  expected_source_ids: [SRC-platform-sla]
+  method: semantic
+  category: extension

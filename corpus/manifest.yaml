@@ -104,3 +104,24 @@ sources:
     policy_tags: [legal, vendor]
     freshness_updated_at: "2026-01-25T00:00:00Z"
     citation_display_name: Vendor Access Summary
+
+  - source_id: SRC-data-retention
+    title: Data Retention Policy
+    uri: corpus/sources/data-retention-policy.md
+    owner_id: team-compliance
+    visibility: internal
+    allowed_roles: [admin, legal, engineer]
+    sensitivity: medium
+    policy_tags: [compliance, data]
+    freshness_updated_at: "2026-02-10T00:00:00Z"
+    citation_display_name: Data Retention Policy
+
+  - source_id: SRC-platform-sla
+    title: Platform SLA Overview
+    uri: corpus/sources/platform-sla-overview.md
+    owner_id: team-platform
+    visibility: internal
+    allowed_roles: [engineer, admin, product]
+    sensitivity: medium
+    freshness_updated_at: "2026-03-01T00:00:00Z"
+    citation_display_name: Platform SLA

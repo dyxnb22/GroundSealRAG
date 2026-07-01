@@ -1,18 +1,21 @@
 # Chunking Baseline
 
-## Strategy
+## Strategies
 
-- **Chunk size**: 512 characters
-- **Overlap**: 64 characters
-- **Boundary**: Split on markdown `##` headings first; sub-split large sections by character window
-- **chunk_id**: `CHK-{sha256(source_id:document_id:chunk_index)[:16]}`
+| Strategy | Chunk size | Overlap |
+|----------|------------|---------|
+| `baseline` / `baseline-512` | 512 | 64 |
+| `baseline-384` | 384 | 48 |
+| `baseline-768` | 768 | 96 |
 
-## Traceability
+## Default
 
-Each chunk carries `source_id`, `document_id`, `heading_path`, `start_offset`, `end_offset`, and inherited permission fields from source.
+`baseline` (512 chars, 64 overlap), heading-aware splits.
 
-## Tradeoffs
+## Experiment
 
-- 512 chars balances citation precision vs semantic completeness
-- Heading-aware splits improve citation labels
-- Overlap reduces boundary misses at cost of duplicate retrieval
+```bash
+bash scripts/run_chunk_experiment.sh
+```
+
+Report: `reports/chunk-size-experiment-report.md`

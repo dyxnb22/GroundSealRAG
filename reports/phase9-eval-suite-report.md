@@ -1,11 +1,11 @@
 # Evaluation Suite Report
 
 - Method: hybrid
-- Total cases: 32
-- Passed: 32
+- Total cases: 36
+- Passed: 36
 - Failed: 0
-- Avg Recall@5: 0.969
-- Avg MRR: 0.969
+- Avg Recall@5: 0.972
+- Avg MRR: 0.972
 - Unauthorized in top-k: 0
 - Citation leakage: 0
 
@@ -19,6 +19,10 @@
 | CITE-02 | 1.00 | 1.00 | 0 | True |
 | CITE-03 | 1.00 | 1.00 | 0 | True |
 | CITE-04 | 1.00 | 1.00 | 0 | True |
+| EXT-01 | 1.00 | 1.00 | 0 | True |
+| EXT-02 | 1.00 | 1.00 | 0 | True |
+| EXT-03 | 1.00 | 1.00 | 0 | True |
+| EXT-04 | 1.00 | 1.00 | 0 | True |
 | FRESH-01 | 1.00 | 1.00 | 0 | True |
 | FRESH-02 | 1.00 | 1.00 | 0 | True |
 | GEN-01 | 1.00 | 1.00 | 0 | True |

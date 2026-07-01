@@ -32,7 +32,7 @@ def rebuild_chunks(paths: ProjectPaths, strategy: str = "baseline") -> int:
     return len(chunks)
 
 
-def build_pipeline(paths: ProjectPaths, force_rebuild: bool = False) -> RetrievalPipeline:
+def build_pipeline(paths: ProjectPaths, force_rebuild: bool = False, strategy: str = "baseline") -> RetrievalPipeline:
     registry = SourceRegistry(paths.registry_dir)
     ingestor = MarkdownIngestor(registry, paths.root)
 
@@ -52,7 +52,7 @@ def build_pipeline(paths: ProjectPaths, force_rebuild: bool = False) -> Retrieva
     stale_chunks = chunks and not is_fingerprint_current(fp_path, chunk_fingerprint(chunks))
 
     if not chunks or force_rebuild or stale_corpus or stale_chunks:
-        chunks = chunker.chunk_all(documents, ingestor.get_body)
+        chunks = chunker.chunk_all(documents, ingestor.get_body, strategy=strategy)
         chunker.save_chunks(chunks, paths.chunks_path)
         write_corpus_fingerprint(registry, document_corpus_fingerprint(documents))
 

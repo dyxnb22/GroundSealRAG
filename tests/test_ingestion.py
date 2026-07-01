@@ -15,11 +15,11 @@ def test_register_and_ingest_all(paths):
     registry = SourceRegistry(paths.registry_dir)
     registry.register_from_manifest(paths.manifest)
     sources = registry.list_sources()
-    assert len(sources) == 10
+    assert len(sources) == 12
 
     ingestor = MarkdownIngestor(registry, paths.root)
     result = ingestor.ingest_all(paths.sources_dir)
-    assert len(result.documents) == 10
+    assert len(result.documents) == 12
     for doc in result.documents:
         assert doc.source_id
         assert doc.document_id.startswith("DOC-")
