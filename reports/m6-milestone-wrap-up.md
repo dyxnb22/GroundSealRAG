@@ -42,7 +42,7 @@ bash scripts/verify.sh
 - Doc alignment: eval case count 36 across TASKS and reports
 - `docs/open-questions.md` — resolved experiment answers from v0.1.0-m6
 - GitHub Release `v0.1.0-m6`
-- Obsolete draft PRs closed (superseded by merged implementation)
+- Obsolete draft PRs #1, #2 — close manually if still open (early planning superseded by main)
 
 ## Resume Narrative
 

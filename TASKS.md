@@ -39,4 +39,4 @@ Tasks mapped to roadmap phases 0–13. Each task leaves a concrete artifact.
 - [x] Phase checklist template — `docs/phase-checklist-template.md`
 - [x] Doc alignment (36 eval cases, open-questions resolutions)
 - [x] GitHub Release `v0.1.0-m6`
-- [x] Close obsolete draft PRs (#1, #2)
+- [ ] Close obsolete draft PRs (#1, #2) — requires repo maintainer (agent token lacks close permission)
